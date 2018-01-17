@@ -29,22 +29,30 @@ SubPresenter是对Presenter的拓展，是其子类，有普通Presenter的功�
 这个时候UserSubPresenter就能很好的派上用场了，User的变化逻辑都在UserSubPresenter中处理，UserDetailPresenter、UserFollowPresenter、UserReportPresenter不需要做任何改动，
 继续保持原有的独立性，在其他页面功能中提供服务。这也是FoolMVP能提供代码高度复用的一个体现点。
 
-#核心类说明：
+## 核心类说明：
+* BaseView：
+V层Push事件回调接口，由界面层实现。主要接收Presenter在处理业务逻辑过程中的结果反馈，onStartTask()，onFinishTask()，onErrorMessage()，showNofityMessage()。BaseView的实现者主要是Activity、Fragment、Service等UI载体。
 
-BaseView：V层Push事件回调接口，由界面层实现。主要接收Presenter在处理业务逻辑过程中的结果反馈，onStartTask()，onFinishTask()，onErrorMessage()，showNofityMessage()。BaseView的实现者主要是Activity、Fragment、Service等UI载体。
+* ViewState：
+标记View类型，可以在Presenter中获得绑定View的载体类型，实现类为Presenter。
 
-ViewState：标记View类型，可以在Presenter中获得绑定View的载体类型，实现类为Presenter。
+* BasePresenter：
+Presenter的接口类，主要有三个生命周期和presenter唯一标识。onCreate()、attachView()、onDestory()、getPresenterId()。
 
-BasePresenter：Presenter的接口类，主要有三个生命周期和presenter唯一标识。onCreate()、attachView()、onDestory()、getPresenterId()。
+* BasePresenterImpl：
+Presenter的基础类，BasePresenter的子类，并实现了ViewState、PresenterDelegate接口。主要封装了Presenter的公共逻辑。
 
-BasePresenterImpl：Presenter的基础类，BasePresenter的子类，并实现了ViewState、PresenterDelegate接口。主要封装了Presenter的公共逻辑。
+* BaseSubPresenterImpl：
+Presenter的超级类或拓展类，继承BasePresenterImpl，并实现了BaseView接口。实现BaseView接口并不代表SubPresenter是V层，SubPresenter仅仅是起到UI事件中转的作用，真实的push UI事件处理交由SubPresenter所绑定的View处理。
 
-BaseSubPresenterImpl：Presenter的超级类或拓展类，继承BasePresenterImpl，并实现了BaseView接口。实现BaseView接口并不代表SubPresenter是V层，SubPresenter仅仅是起到UI事件中转的作用，真实的push UI事件处理交由SubPresenter所绑定的View处理。
+* CompositePresenter：
+该接口有View载体实现，主要是对界面层集合的Presenter做复合管理，比如统一销毁Presenter。
 
-CompositePresenter：该接口有View载体实现，主要是对界面层集合的Presenter做复合管理，比如统一销毁Presenter。
+* RequestCallBack：
+P层与M层的数据接口回调，onRequestStart()、onFinish()、onResponse、onRequestError。
 
-RequestCallBack：P层与M层的数据接口回调，onRequestStart()、onFinish()、onResponse、onRequestError。
+* AbstractRequestCallBack：
+RequestCallBack接口的抽象类，使RequestCallBack的实现者只关注onResponse回调，其他三个功能回调在公共基类统一处理。
 
-AbstractRequestCallBack：RequestCallBack接口的抽象类，使RequestCallBack的实现者只关注onResponse回调，其他三个功能回调在公共基类统一处理。
-
-PresenterDelegate：Presenter的一个委派类，为了简化RequestCallBack的实现类，使RequestCallBack的实现类只关注onResponse结果，使通用的操作在基类中统一处理。
+* PresenterDelegate：
+Presenter的一个委派类，为了简化RequestCallBack的实现类，使RequestCallBack的实现类只关注onResponse结果，使通用的操作在基类中统一处理。
