@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorWhite">#ffffffff</color>
+    <color name="colorBlack">#000000</color>
+
+    <color name="transparent">#0000</color>
+
+    <color name="transparent_half">#7B000000</color>
+    <color name="transparent_40">#64000000</color>
+    <color name="transparent_30">#4c000000</color>
+    <color name="black_transluent20">#33000000</color>
+    <color name="black_transluent10">#20000000</color>
+
+    <color name="colorTheme">#ff810c</color>
+    <color name="colorThemeHalf">#7Bff810c</color>
+
+    <color name="laberColor1">#7B000000</color>
+    <color name="laberColor2">#7Bff810c</color>
+    <color name="laberColor3">#00000000</color>
+
+    <!--页面背景的颜色-->
+    <color name="colorPageBg">#f5f8fa</color>
+
+    <color name="colorTextGrey">#8c8c8c</color>
+    <color name="colorText33">#333333</color>
+    <color name="colorText92">#929292</color>
+    <color name="colorText54">#444a54</color>
+    <color name="colorText5c">#5c5c5c</color>
+    <color name="colorTextLink">#4f6fb5</color>
+    <color name="colorLine">#eeeeee</color>
+    <color name="colorBg6f">#f6f6f6</color>
+    <color name="colorDivider">#e0e0e0</color>
+    <color name="colorText80">#808080</color>
+    <color name="colorTextA9">#a9a9a9</color>
+    <color name="colorText9D">#9d9d9d</color>
+    <color name="colorTextDB">#dbdbdb</color>
+    <color name="colorTextAB">#ababab</color>
+    <color name="colorText55">#555555</color>
+    <color name="colorText52">#525252</color>
+    <color name="colorTextBA">#bababa</color>
+    <color name="colorText5F">#ff5f5f</color>
+    <color name="colorBgf0">#f0f0f0</color>
+
+    <color name="commentMenu1">#dbdbdb</color>
+    <color name="commentMenu2">#c6c6c6</color>
+    <color name="commentMenu3">#f27170</color>
+
+    <color name="placeColor0">#bcbcbc</color>
+    <color name="placeColor1">#e8aa87</color>
+    <color name="placeColor2">#ece2d9</color>
+    <color name="placeColor3">#90bab6</color>
+    <color name="placeColor4">#c2c5d8</color>
+    <color name="placeColor5">#888c63</color>
+    <color name="placeColor6">#659c99</color>
+    <color name="placeColor7">#bfcd88</color>
+    <color name="placeColor8">#f0e6e6</color>
+    <color name="placeColor9">#c9b293</color>
+    <color name="placeColor10">#96907f</color>
+    <color name="placeColor11">#e0b3ad</color>
+    <color name="placeColor12">#a3aadb</color>
+    <color name="placeColor13">#a55a79</color>
+    <color name="placeColor14">#486994</color>
+
+    <color name="iconStartColor">#FFFFFF</color>
+    <color name="iconEndColor1">#999999</color>
+    <color name="iconEndColor2">#525252</color>
+    <color name="maxRed">#ff3f2a</color>
+
+    <!--水波纹或5.0以下选择器颜色-->
+    <color name="tabBackground">#777D7D7D</color>
+
+    <drawable name="drawableTheme">#ff810c</drawable>
+    <drawable name="drawableLine">#eeeeee</drawable>
+    <drawable name="drawableWhite">#ffffffff</drawable>
+    <drawable name="drawableBlack">#ff000000</drawable>
+    <drawable name="drawablePageBg">#f6f6f6</drawable>
+
+    <color name="bgColor1">#787878</color>
+    <color name="bgColor2">#d7d7d7</color>
+    <color name="bgColor3">#f1f1f1</color>
+    <color name="bgColor4">#e2e2e2</color>
+    <color name="bgColor5">#ebebeb</color>
+
+</resources>
