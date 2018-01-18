@@ -2,6 +2,10 @@
 
 一种MVP的实现方式，目标：代码高度复用、良好的组件颗粒度、方便进行单元测试，结构尽量清晰简单的高内聚低耦合的分层结构。
 
+核心基础结构：
+
+<img src="https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/foolmvp_structure.jpg" width="300" height="600" alt="项目结构图"/>
+
 ## 前言
 在项目架构中，分层架构是非常通用且常见的一种架构方式。其中MVP结构是分层架构的一种方式，最近几年在客户端开发中比较流行。
 网上也有不少资料对MVP结构做了介绍和开发demo，但大部分都是单一应用在表象，真正的从如何解耦功能、业务代码隔离、多人团队开发等综合方向去提出解决方案的却少之又少。
@@ -45,9 +49,6 @@ SubPresenter是对Presenter的拓展，是其子类，有普通Presenter的功�
 举报用户(UserReportPresenter)等功能，这几个功能就具有强关联性，都是围绕User进行处理，对User的所有改动都要实时的更新User。
 这个时候UserSubPresenter就能很好的派上用场了，User的变化逻辑都在UserSubPresenter中处理，UserDetailPresenter、UserFollowPresenter、UserReportPresenter不需要做任何改动，
 继续保持原有的独立性，在其他页面功能中提供服务。这也是FoolMVP能提供代码高度复用的一个体现点。
-
-FoolMVP_Lib基础结构：
-![](https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/foolmvp_structure.jpg)
 
 ## 核心类说明：
 * **BaseView：**
