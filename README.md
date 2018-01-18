@@ -10,8 +10,11 @@
 
 注：项目需要结合Rxjava和dagger2一起使用，FoolMVP充分利用了响应式编程和依赖注入强大功能基础才能很方便、高效的满足我们开发的需求。
 如何大家对Rxjava或dagger2不熟悉，可以参考如下几篇文章。
+
 [给初学者的 RxJava2.0 系列教程](https://weibo.com/ttarticle/p/show?id=2309404060189467756302)
+
 [Android常用开源工具（1）-Dagger2入门](http://blog.csdn.net/duo2005duo/article/details/50618171)
+
 [Android常用开源工具（2）-Dagger2进阶](http://blog.csdn.net/duo2005duo/article/details/50696166)
 
 ## 正文
@@ -42,6 +45,9 @@ SubPresenter是对Presenter的拓展，是其子类，有普通Presenter的功�
 举报用户(UserReportPresenter)等功能，这几个功能就具有强关联性，都是围绕User进行处理，对User的所有改动都要实时的更新User。
 这个时候UserSubPresenter就能很好的派上用场了，User的变化逻辑都在UserSubPresenter中处理，UserDetailPresenter、UserFollowPresenter、UserReportPresenter不需要做任何改动，
 继续保持原有的独立性，在其他页面功能中提供服务。这也是FoolMVP能提供代码高度复用的一个体现点。
+
+FoolMVP_Lib基础结构：
+![](https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/foolmvp_structure.jpg)
 
 ## 核心类说明：
 * **BaseView：**
