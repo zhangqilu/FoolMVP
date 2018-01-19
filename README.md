@@ -2,24 +2,25 @@
 
 一种MVP的实现方式，目标：代码高度复用、良好的组件颗粒度、方便进行单元测试，结构尽量清晰简单的高内聚低耦合的分层结构。
 
-核心基础结构：
+FoolMVP_Lib的核心基础结构：
 
 <img src="https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/foolmvp_structure.jpg" width="300" height="600" alt="项目结构图"/>
 
-## 前言
-在项目架构中，分层架构是非常通用且常见的一种架构方式。其中MVP结构是分层架构的一种方式，最近几年在客户端开发中比较流行。
-网上也有不少资料对MVP结构做了介绍和开发demo，但大部分都是单一应用在表象，真正的从如何解耦功能、业务代码隔离、多人团队开发等综合方向去提出解决方案的却少之又少。
-最近开发的一个项目已初步稳定，也是使用MVP的方式做分层架构，打算把在结构设计的思路分享给大家。为了能让大家容易记住，我把这种架构取名为FoolMVP，意为“傻瓜MVP”.
-这个架构思路的目标即不需要资深开发经验人员也能开发出结构清晰、代码高度复用、有良好的组件颗粒度、组件间可插拔、可进行单元测试的结构。
-
-注：项目需要结合Rxjava和dagger2一起使用，FoolMVP充分利用了响应式编程和依赖注入强大功能基础才能很方便、高效的满足我们开发的需求。
-如何大家对Rxjava或dagger2不熟悉，可以参考如下几篇文章。
+注：项目需要结合Rxjava和dagger2一起使用，FoolMVP充分利用了响应式编程和依赖注入强大功能基础之上很方便、高效的满足我们的开发需求。
+大家如果对Rxjava或dagger2不熟悉，可以参考如下几篇文章。
 
 [给初学者的 RxJava2.0 系列教程](https://weibo.com/ttarticle/p/show?id=2309404060189467756302)
 
 [Android常用开源工具（1）-Dagger2入门](http://blog.csdn.net/duo2005duo/article/details/50618171)
 
 [Android常用开源工具（2）-Dagger2进阶](http://blog.csdn.net/duo2005duo/article/details/50696166)
+
+
+## 前言
+在项目架构中，分层架构是非常通用且常见的一种架构方式。其中MVP结构是分层架构的一种方式，最近几年在客户端开发中比较流行。
+网上也有不少资料对MVP结构做了介绍和开发demo，但大部分都是单一应用在表象，真正的从如何解耦功能、业务代码隔离、多人团队开发等综合方向去提出解决方案的却少之又少。
+最近开发的一个项目已初步稳定，也是使用MVP的方式做分层架构，打算把在结构设计的思路分享给大家。为了能让大家容易记住，我把这种架构取名为FoolMVP，意为“傻瓜MVP”.
+这个架构思路的目标即不需要资深开发经验人员也能开发出结构清晰、代码高度复用、有良好的组件颗粒度、组件间可插拔、可进行单元测试的结构。
 
 ## 正文
 MVP，全称 Model-View-Presenter，分别代表界面层（V）、业务逻辑层（P）、数据访问层（M），即三层架构。
@@ -79,3 +80,359 @@ RequestCallBack接口的抽象类，使RequestCallBack的实现者只关注onRes
 Presenter的一个委派类，为了简化RequestCallBack的实现类，使RequestCallBack的实现类只关注onResponse结果，将通用的操作在基类中统一处理。
 
 ## Demo说明：
+
+<img src="https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/FoolMVP模块依赖关系.png" width="300" height="600" alt="项目结构图"/>
+
+为了能体现出如何进行模块解耦和代码的物理隔离，特将demo的业务分为了两个模块，feed模块和user模块。comm模块提供业务的公共服务，foolmvp-lib作底层服务。
+业务功能包括：
+1.准备基础数据user列表数据与feed列表数据，每一条feed所属一个用户，用户之间可以相互关注，为了快速方便实现demo，所有的数据都存在本地数据库。
+2.feed模块有feed列表case、feed详情case、关注用户case；user模块有用户详情case、关注用户case。
+其中，关注用户case同时被feed模块与user模块引用。
+3.为了让大家看到请求加载的效果，每一个数据api都做了延时加载。
+
+有几个有特色关注点：
+1.Presenter只关注业务结果，请求开始、请求结束、请求异常等操作均有公共基类完成，UI的显示由具体UI决定（基于presenterId作区别）。例如：获得feed详情Presenter
+
+    public class UserDetailPresenterImpl extends BasePresenterImpl<IUserDetailView> implements UserDetailPresenter {
+    
+        private UserInteractor userInteractor;
+    
+        @Inject
+        public UserDetailPresenterImpl(UserInteractor userInteractor){
+            this.userInteractor = userInteractor;
+        }
+    
+        /**
+         * 获得用户详情信息
+         *
+         * @param userId
+         */
+        @Override
+        public void requestUserDetail(long userId) {
+            register(RxUtils.defaultCallback(userInteractor.getUser(userId).map(new Function<UserEntity, UserBean>() {
+                @Override
+                public UserBean apply(UserEntity userEntity) throws Exception {
+                    return new UserBean(userEntity);
+                }
+            }), new AbstractRequestCallBack<UserBean>(this) {
+                /**
+                 * 请求结果回调
+                 *
+                 * @param data
+                 */
+                @Override
+                public void onResponse(UserBean data) {
+                    if(mView != null){
+                        mView.doUserDetail(data);
+                    }
+                }
+            }));
+        }
+    
+        /**
+         * Presenter的入口，可做初始化操作
+         */
+        @Override
+        public void onCreate() {
+    
+        }
+    }
+    
+2.业务数据改变实时同步。例如：关注用户或取消关注用户，实时同步Feed详情与user详情实时更新。
+
+    public class FollowPresenterImpl extends BasePresenterImpl<IFollowView> implements FollowPresenter {
+
+    private UserAssistInteractor userAssistInteractor;
+
+    @Inject
+    public FollowPresenterImpl(UserAssistInteractor userAssistInteractor) {
+        this.userAssistInteractor = userAssistInteractor;
+    }
+
+    /**
+     * Presenter的入口，可做初始化操作
+     */
+    @Override
+    public void onCreate() {
+        register(RxBus.getDefault().register(UpdateRelationship.class, new Consumer<UpdateRelationship>() {
+            @Override
+            public void accept(UpdateRelationship updateRelationship) throws Exception {
+                if (updateRelationship == null) {
+                    return;
+                }
+                if (mView != null) {
+                    long userId = updateRelationship.getUserId();
+                    Relationship relationship = updateRelationship.getRelationship();
+                    if (Relationship.DEFAULT.equals(relationship)) {
+                        mView.doUnFollowResult(userId, relationship);
+                    } else if (Relationship.FOLLOWED.equals(relationship)) {
+                        mView.doFollowedResult(userId, relationship);
+                    }
+                }
+            }
+        }, AndroidSchedulers.mainThread()));
+    }
+
+    /**
+     * 关注用户
+     *
+     * @param userId
+     */
+    @Override
+    public void toFollowUser(long userId) {
+        updateUserRelationship(userId, Relationship.FOLLOWED);
+    }
+
+    /**
+     * 取消关注
+     *
+     * @param userId
+     */
+    @Override
+    public void toUnFollowUser(long userId) {
+        updateUserRelationship(userId, Relationship.DEFAULT);
+    }
+
+    private void updateUserRelationship(final long userId, final Relationship relationship) {
+        userAssistInteractor.updateUserRelation(userId, relationship, new AbstractRequestCallBack<Boolean>(this) {
+            @Override
+            public void onResponse(Boolean data) {
+                RxBus.getDefault().post(new UpdateRelationship(userId, relationship));
+            }
+        });
+    }
+
+}
+
+
+3.Presenter可拓展、可嵌套使用，即BasePresenterImpl与BaseSubPresenterImpl的继承关系。
+
+    public class UserSubPresenterImpl extends BaseSubPresenterImpl<IUserSubView> implements UserSubPresenter,IUserDetailView,IFollowView {
+    
+        private UserBean userBean;
+    
+        @Inject
+        UserDetailPresenterImpl userDetailPresenter;
+    
+        @Inject
+        FollowPresenterImpl followPresenter;
+    
+        @Inject
+        public UserSubPresenterImpl(){}
+    
+        /**
+         * Presenter的入口，可做初始化操作
+         */
+        @Override
+        public void onCreate() {
+            userDetailPresenter.attachView(this);
+            followPresenter.attachView(this);
+        }
+    
+        /**
+         * 获得用户详情信息
+         *
+         * @param userId
+         */
+        @Override
+        public void requestUserDetail(long userId) {
+            userDetailPresenter.requestUserDetail(userId);
+        }
+    
+        /**
+         * 切换用户关系
+         */
+        @Override
+        public void updateUserRelationship() {
+            if(userBean == null){
+                return;
+            }
+    
+            if(Relationship.DEFAULT.equals(userBean.getRelationship())){
+                followPresenter.toFollowUser(userBean.getId());
+            }else if(Relationship.FOLLOWED.equals(userBean.getRelationship())){
+                followPresenter.toUnFollowUser(userBean.getId());
+            }
+        }
+    
+        /**
+         * 获得用户详情信息回调
+         *
+         * @param userBean
+         */
+        @Override
+        public void doUserDetail(UserBean userBean) {
+            this.userBean = userBean;
+            if(mView != null){
+                mView.doUserDetail(userBean);
+            }
+        }
+    
+        /**
+         * 关注用户成功回调
+         *
+         * @param userId
+         * @param relationship
+         */
+        @Override
+        public void doFollowedResult(long userId, Relationship relationship) {
+            if(userBean == null || userId != userBean.getId()){
+                return;
+            }
+            userBean.setRelationship(relationship);
+            if(mView != null){
+                mView.doFollowedResult();
+            }
+        }
+    
+        /**
+         * 取消关注用户回调
+         *
+         * @param userId
+         * @param relationship
+         */
+        @Override
+        public void doUnFollowResult(long userId, Relationship relationship) {
+            if(userBean == null || userId != userBean.getId()){
+                return;
+            }
+            userBean.setRelationship(relationship);
+            if(mView != null){
+                mView.doUnFollowResult();
+            }
+        }
+    }
+
+4.在M层中，定义数据接口时，尽量同时定义同步接口与异常接口，异常接口依赖同步接口使用，使M层最大化满足P层的随意调用。
+
+        public class FeedInteratorImpl implements FeedInteractor {
+        
+            private FeedEntityDao feedEntityDao;
+        
+            @Inject
+            public FeedInteratorImpl(FeedEntityDao feedEntityDao) {
+                this.feedEntityDao = feedEntityDao;
+            }
+        
+            /**
+             * 添加一条Feed
+             *
+             * @param feedEntity
+             * @param callBack
+             * @return
+             */
+            @Override
+            public Disposable saveFeed(FeedEntity feedEntity, RequestCallBack<Long> callBack) {
+                return RxUtils.defaultCallback(saveFeed(feedEntity), callBack);
+            }
+        
+            /**
+             * 添加一条Feed
+             *
+             * @param feedEntity
+             * @return
+             */
+            @Override
+            public Observable<Long> saveFeed(FeedEntity feedEntity) {
+                return Observable.just(feedEntity).map(new Function<FeedEntity, Long>() {
+                    @Override
+                    public Long apply(FeedEntity feedEntity) throws Exception {
+                        return feedEntityDao.insert(feedEntity);
+                    }
+                }).delay(Constants.DELAY_TIME, Constants.TIME_TYPE);
+            }
+            
+            ......
+        }
+
+5.面向接口编程，进行业务逻辑的物理隔离。比如FollowPresenter，依赖UserAssistInteractor，但其实现类UserAssistInteractorImpl在user模块中实现。
+依赖注入贯穿各个业务层中，这时就需要我们在app中对接口与实现类进行注入绑定，UserAssistInteractor接口与UserAssistInteractorImpl实现类通过代理+预埋点的方式将两者关联起来。
+
+    public class UserAssistInteractorProxy implements UserAssistInteractor {
+
+        private UserAssistInteractor userAssistInteractor;
+    
+        public UserAssistInteractorProxy(UserAssistInteractor userAssistInteractor) {
+            this.userAssistInteractor = userAssistInteractor;
+        }
+    
+        /**
+         * 更新用户关系
+         *
+         * @param userId
+         * @param relationship
+         * @param callBack
+         * @return
+         */
+        @Override
+        public Disposable updateUserRelation(long userId, Relationship relationship, RequestCallBack<Boolean> callBack) {
+            return userAssistInteractor.updateUserRelation(userId, relationship, callBack);
+        }
+    
+        /**
+         * 更新用户关系
+         *
+         * @param userId
+         * @param relationship
+         * @return
+         */
+        @Override
+        public Observable<Boolean> updateUserRelation(long userId, Relationship relationship) {
+            return userAssistInteractor.updateUserRelation(userId, relationship);
+        }
+    }
+    
+    public class UserAssistInteractorPlaceholder {
+    
+        private UserAssistInteractorProxy userAssistInteractorProxy;
+    
+        public UserAssistInteractorPlaceholder() {}
+    
+        public UserAssistInteractorProxy getUserAssistInteractorProxy() {
+            return userAssistInteractorProxy;
+        }
+    
+        public void setUserAssistInteractorProxy(UserAssistInteractorProxy userAssistInteractorProxy) {
+            this.userAssistInteractorProxy = userAssistInteractorProxy;
+        }
+    }
+    
+    public class MainApplication extends BaseApplication {
+    
+        private UserAssistInteractorPlaceholder userAssistInteractorPlaceholder;
+        
+        .......
+    
+        /**
+         * 初始化主应用注入组件
+         */
+        private void initAppComponent() {
+            UserApiModule userApiModule = new UserApiModule();
+            FeedApiModule feedApiModule = new FeedApiModule();
+    
+            UserGlobal.init(userApiModule);
+            FeedGlobal.init(feedApiModule);
+    
+            DaggerAppComponent.builder().appApplicationComponent(mApplicationComponent)
+                    .userApiModule(userApiModule)
+                    .feedApiModule(feedApiModule).build();
+    
+            userAssistInteractorPlaceholder.setUserAssistInteractorProxy(UserGlobal.getUserComponent().getUserAssistInteractorProxy());
+        }
+    
+        /**
+         * 初始化应用公共注入组件
+         */
+        private void initApplicationComponent() {
+            userAssistInteractorPlaceholder = new UserAssistInteractorPlaceholder();
+            mApplicationComponent = DaggerAppApplicationComponent.builder()
+                    .applicationModule(new ApplicationModule(this))
+                    .apiModule(new ApiModule(mDaoMaster, userAssistInteractorPlaceholder))
+                    .build();
+        }
+    
+        @Override
+        public AppApplicationComponent getApplicationComponent() {
+            return mApplicationComponent;
+        }
+    }
