@@ -81,17 +81,20 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
 
 ## Demo说明：
 
-<img src="https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/FoolMVP模块依赖关系.png" width="300" height="600" alt="项目结构图"/>
+<img src="https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/FoolMVP模块依赖关系.png" width="400" height="300" alt="项目结构图"/>
 
 为了能体现出如何进行模块解耦和代码的物理隔离，特将demo的业务分为了两个模块，feed模块和user模块。comm模块提供业务的公共服务，foolmvp-lib作底层服务。
 业务功能包括：
-1.准备基础数据user列表数据与feed列表数据，每一条feed所属一个用户，用户之间可以相互关注，为了快速方便实现demo，所有的数据都存在本地数据库。
-2.feed模块有feed列表case、feed详情case、关注用户case；user模块有用户详情case、关注用户case。
-其中，关注用户case同时被feed模块与user模块引用。
-3.为了让大家看到请求加载的效果，每一个数据api都做了延时加载。
 
-有几个有特色关注点：
-1.Presenter只关注业务结果，请求开始、请求结束、请求异常等操作均有公共基类完成，UI的显示由具体UI决定（基于presenterId作区别）。例如：获得feed详情Presenter
+* 1.准备基础数据user列表数据与feed列表数据，每一条feed所属一个用户，用户之间可以相互关注，为了快速方便实现demo，所有的数据都存在本地数据库。
+
+* 2.feed模块有feed列表case、feed详情case、关注用户case；user模块有用户详情case、关注用户case。
+其中，关注用户case同时被feed模块与user模块引用。
+
+* 3.为了让大家看到请求加载的效果，每一个数据api都做了延时加载。
+
+### 特色关注点：
+* 1.Presenter只关注业务结果，请求开始、请求结束、请求异常等操作均有公共基类完成，UI的显示由具体UI决定（基于presenterId作区别）。例如：获得feed详情Presenter
 
     public class UserDetailPresenterImpl extends BasePresenterImpl<IUserDetailView> implements UserDetailPresenter {
     
@@ -138,7 +141,7 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
         }
     }
     
-2.业务数据改变实时同步。例如：关注用户或取消关注用户，实时同步Feed详情与user详情实时更新。
+* 2.业务数据改变实时同步。例如：关注用户或取消关注用户，实时同步Feed详情与user详情实时更新。
 
     public class FollowPresenterImpl extends BasePresenterImpl<IFollowView> implements FollowPresenter {
 
@@ -205,7 +208,7 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
 }
 
 
-3.Presenter可拓展、可嵌套使用，即BasePresenterImpl与BaseSubPresenterImpl的继承关系。
+* 3.Presenter可拓展、可嵌套使用，即BasePresenterImpl与BaseSubPresenterImpl的继承关系。
 
     public class UserSubPresenterImpl extends BaseSubPresenterImpl<IUserSubView> implements UserSubPresenter,IUserDetailView,IFollowView {
     
@@ -303,7 +306,7 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
         }
     }
 
-4.在M层中，定义数据接口时，尽量同时定义同步接口与异常接口，异常接口依赖同步接口使用，使M层最大化满足P层的随意调用。
+* 4.在M层中，定义数据接口时，尽量同时定义同步接口与异常接口，异常接口依赖同步接口使用，使M层最大化满足P层的随意调用。
 
         public class FeedInteratorImpl implements FeedInteractor {
         
@@ -345,7 +348,7 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
             ......
         }
 
-5.面向接口编程，进行业务逻辑的物理隔离。比如FollowPresenter，依赖UserAssistInteractor，但其实现类UserAssistInteractorImpl在user模块中实现。
+* 5.面向接口编程，进行业务逻辑的物理隔离。比如FollowPresenter，依赖UserAssistInteractor，但其实现类UserAssistInteractorImpl在user模块中实现。
 依赖注入贯穿各个业务层中，这时就需要我们在app中对接口与实现类进行注入绑定，UserAssistInteractor接口与UserAssistInteractorImpl实现类通过代理+预埋点的方式将两者关联起来。
 
     public class UserAssistInteractorProxy implements UserAssistInteractor {
