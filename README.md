@@ -26,7 +26,7 @@ FoolMVP_Lib的核心基础结构：
 ## 正文
 MVP，全称 Model-View-Presenter，分别代表界面层（V）、业务逻辑层（P）、数据访问层（M），即三层架构。
 
-<img src="https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/image_thumb_1.png" width="600" height="400" alt="项目结构图"/>
+<img src="https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/image_thumb_1.png" width="500" height="300" alt="项目结构图"/>
 
 
 MVP有好多种实现方式，核心的不同点大都集中在P层上。所以P层设计好坏直接影响整体结构。
