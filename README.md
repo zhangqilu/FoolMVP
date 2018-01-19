@@ -107,117 +107,117 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
 * 1.Presenter只关注业务结果，请求开始、请求结束、请求异常等操作均有公共基类完成，UI的显示由具体UI决定（基于presenterId作区别）。例如：获得feed详情Presenter
 
 
-        public class UserDetailPresenterImpl extends BasePresenterImpl<IUserDetailView> implements UserDetailPresenter {
-        
-            private UserInteractor userInteractor;
-        
-            @Inject
-            public UserDetailPresenterImpl(UserInteractor userInteractor){
-                this.userInteractor = userInteractor;
-            }
-        
-            /**
-             * 获得用户详情信息
-             *
-             * @param userId
-             */
-            @Override
-            public void requestUserDetail(long userId) {
-                register(RxUtils.defaultCallback(userInteractor.getUser(userId).map(new Function<UserEntity, UserBean>() {
-                    @Override
-                    public UserBean apply(UserEntity userEntity) throws Exception {
-                        return new UserBean(userEntity);
-                    }
-                }), new AbstractRequestCallBack<UserBean>(this) {
-                    /**
-                     * 请求结果回调
-                     *
-                     * @param data
-                     */
-                    @Override
-                    public void onResponse(UserBean data) {
-                        if(mView != null){
-                            mView.doUserDetail(data);
+            public class FeedDetailPresenterImpl extends BasePresenterImpl<IFeedDetailView> implements FeedDetailPresenter {
+                private FeedInteractor feedInteractor;
+            
+                @Inject
+                public FeedDetailPresenterImpl(FeedInteractor feedInteractor){
+                    this.feedInteractor = feedInteractor;
+                }
+            
+                /**
+                 * Presenter的入口，可做初始化操作
+                 */
+                @Override
+                public void onCreate() {
+            
+                }
+            
+                /**
+                 * 获得Feed详情
+                 *
+                 * @param feedId
+                 */
+                @Override
+                public void requestFeed(long feedId) {
+                    register(RxUtils.defaultCallback(feedInteractor.getFeed(feedId).map(new Function<FeedEntity, FeedBean>() {
+                        @Override
+                        public FeedBean apply(FeedEntity feedEntity) throws Exception {
+                            return new FeedBean(feedEntity);
                         }
-                    }
-                }));
+                    }), new AbstractRequestCallBack<FeedBean>(this) {
+                        /**
+                         * 请求结果回调
+                         *
+                         * @param data
+                         */
+                        @Override
+                        public void onResponse(FeedBean data) {
+                            if(mView != null){
+                                mView.doFeedResult(data);
+                            }
+                        }
+                    }));
+                }
             }
-        
-            /**
-             * Presenter的入口，可做初始化操作
-             */
-            @Override
-            public void onCreate() {
-        
-            }
-        }
+
     
-* 2.业务数据改变实时同步。例如：关注用户或取消关注用户，实时同步Feed详情与user详情实时更新。
+* 2.业务数据改变实时同步。例如：关注用户或取消关注用户，实时同步Feed详情与User详情实时更新。
 
 
             public class FollowPresenterImpl extends BasePresenterImpl<IFollowView> implements FollowPresenter {
         
-            private UserAssistInteractor userAssistInteractor;
-        
-            @Inject
-            public FollowPresenterImpl(UserAssistInteractor userAssistInteractor) {
-                this.userAssistInteractor = userAssistInteractor;
-            }
-        
-            /**
-             * Presenter的入口，可做初始化操作
-             */
-            @Override
-            public void onCreate() {
-                register(RxBus.getDefault().register(UpdateRelationship.class, new Consumer<UpdateRelationship>() {
-                    @Override
-                    public void accept(UpdateRelationship updateRelationship) throws Exception {
-                        if (updateRelationship == null) {
-                            return;
-                        }
-                        if (mView != null) {
-                            long userId = updateRelationship.getUserId();
-                            Relationship relationship = updateRelationship.getRelationship();
-                            if (Relationship.DEFAULT.equals(relationship)) {
-                                mView.doUnFollowResult(userId, relationship);
-                            } else if (Relationship.FOLLOWED.equals(relationship)) {
-                                mView.doFollowedResult(userId, relationship);
+                private UserAssistInteractor userAssistInteractor;
+            
+                @Inject
+                public FollowPresenterImpl(UserAssistInteractor userAssistInteractor) {
+                    this.userAssistInteractor = userAssistInteractor;
+                }
+            
+                /**
+                 * Presenter的入口，可做初始化操作
+                 */
+                @Override
+                public void onCreate() {
+                    register(RxBus.getDefault().register(UpdateRelationship.class, new Consumer<UpdateRelationship>() {
+                        @Override
+                        public void accept(UpdateRelationship updateRelationship) throws Exception {
+                            if (updateRelationship == null) {
+                                return;
+                            }
+                            if (mView != null) {
+                                long userId = updateRelationship.getUserId();
+                                Relationship relationship = updateRelationship.getRelationship();
+                                if (Relationship.DEFAULT.equals(relationship)) {
+                                    mView.doUnFollowResult(userId, relationship);
+                                } else if (Relationship.FOLLOWED.equals(relationship)) {
+                                    mView.doFollowedResult(userId, relationship);
+                                }
                             }
                         }
-                    }
-                }, AndroidSchedulers.mainThread()));
-            }
+                    }, AndroidSchedulers.mainThread()));
+                }
+            
+                /**
+                 * 关注用户
+                 *
+                 * @param userId
+                 */
+                @Override
+                public void toFollowUser(long userId) {
+                    updateUserRelationship(userId, Relationship.FOLLOWED);
+                }
+            
+                /**
+                 * 取消关注
+                 *
+                 * @param userId
+                 */
+                @Override
+                public void toUnFollowUser(long userId) {
+                    updateUserRelationship(userId, Relationship.DEFAULT);
+                }
+            
+                private void updateUserRelationship(final long userId, final Relationship relationship) {
+                    userAssistInteractor.updateUserRelation(userId, relationship, new AbstractRequestCallBack<Boolean>(this) {
+                        @Override
+                        public void onResponse(Boolean data) {
+                            RxBus.getDefault().post(new UpdateRelationship(userId, relationship));
+                        }
+                    });
+                }
         
-            /**
-             * 关注用户
-             *
-             * @param userId
-             */
-            @Override
-            public void toFollowUser(long userId) {
-                updateUserRelationship(userId, Relationship.FOLLOWED);
             }
-        
-            /**
-             * 取消关注
-             *
-             * @param userId
-             */
-            @Override
-            public void toUnFollowUser(long userId) {
-                updateUserRelationship(userId, Relationship.DEFAULT);
-            }
-        
-            private void updateUserRelationship(final long userId, final Relationship relationship) {
-                userAssistInteractor.updateUserRelation(userId, relationship, new AbstractRequestCallBack<Boolean>(this) {
-                    @Override
-                    public void onResponse(Boolean data) {
-                        RxBus.getDefault().post(new UpdateRelationship(userId, relationship));
-                    }
-                });
-            }
-        
-        }
 
 
 * 3.Presenter可拓展、可嵌套使用，即BasePresenterImpl与BaseSubPresenterImpl的继承关系。
