@@ -8,6 +8,8 @@
 
 [日常开发中，如何给团队留下财富？（方法论篇）](https://www.jianshu.com/p/67d8789864b2)
 
+
+
 FoolMVP_Lib的核心基础结构：
 
 <img src="https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/foolmvp_structure.jpg" width="300" height="600" alt="项目结构图"/>
