@@ -6,7 +6,7 @@ import com.ljj.foolmvp.user.di.component.UserComponent;
 import com.ljj.foolmvp.user.di.module.UserApiModule;
 
 /**
- * Created by lijunjie on 2017/11/16.
+ * Created by lijunjie on 2017/12/21.
  */
 
 public class UserGlobal {

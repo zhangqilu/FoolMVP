@@ -16,8 +16,11 @@ import com.ljj.foolmvp.user.ui.view.IUserSubView;
 
 import javax.inject.Inject;
 
+/**
+ * Created by lijunjie on 2017/12/21.
+ */
 
-public class UserDetailActivity extends BaseUserActivity implements IUserSubView,View.OnClickListener {
+public class UserDetailActivity extends BaseUserActivity implements IUserSubView, View.OnClickListener {
 
     private TextView nickNameTV, ageTV, emailTV, phoneTV, signTV;
     private Button followBtn;
@@ -40,10 +43,10 @@ public class UserDetailActivity extends BaseUserActivity implements IUserSubView
         setContentView(R.layout.activity_user);
         long userId;
         UserBrief userBrief = getIntent().getParcelableExtra(USER);
-        if(userBrief != null){
+        if (userBrief != null) {
             userId = userBrief.getId();
-        }else{
-            userId = getIntent().getLongExtra(USER_ID,-1);
+        } else {
+            userId = getIntent().getLongExtra(USER_ID, -1);
         }
 
         nickNameTV = findViewById(R.id.user_detail_name);
@@ -68,7 +71,7 @@ public class UserDetailActivity extends BaseUserActivity implements IUserSubView
             return;
         }
         nickNameTV.setText(userBean.getName());
-        ageTV.setText(userBean.getAge()+"岁");
+        ageTV.setText(userBean.getAge() + "岁");
         emailTV.setText(userBean.getEmail());
         phoneTV.setText(userBean.getPhoneNumber());
         signTV.setText(userBean.getDescription());
@@ -107,7 +110,7 @@ public class UserDetailActivity extends BaseUserActivity implements IUserSubView
      */
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.user_detail_follow_btn){
+        if (v.getId() == R.id.user_detail_follow_btn) {
             userSubPresenter.updateUserRelationship();
         }
     }
