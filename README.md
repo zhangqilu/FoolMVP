@@ -334,7 +334,7 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
                 }
             }
 
-* 4.在M层中，定义数据接口时，尽量同时定义同步接口与异常接口，异常接口依赖同步接口使用，使M层最大化满足P层的随意调用。
+* 4.在M层中，定义数据接口时，尽量同时定义同步接口与异步接口，异常接口依赖同步接口使用，使M层最大化满足P层的随意调用。
 
 
             public class FeedInteratorImpl implements FeedInteractor {
@@ -493,3 +493,7 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
                 return mApplicationComponent;
             }
         }
+
+
+
+联系我：qqiabc521@163.com
