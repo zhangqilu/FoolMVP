@@ -505,4 +505,4 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
 3、增加页面重新创建对Presenter的复用等功能。
 
 
-联系我：qqiabc521@163.com
+联系我：qqiabc521#163.com
