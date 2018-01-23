@@ -4,9 +4,9 @@
 
 这是我团队高效开发三部曲中的实战篇，另两篇分别是愿景篇和方法论篇：
 
-[开发团队多人协作的思考(愿景篇)](https://www.jianshu.com/p/d8cef3725175)
+[开发团队多人协作的思考(愿景)](https://www.jianshu.com/p/d8cef3725175)
 
-[日常开发中，如何给团队留下财富？（方法论篇）](https://www.jianshu.com/p/67d8789864b2)
+[日常开发中，如何给团队留下财富？（方法论）](https://www.jianshu.com/p/67d8789864b2)
 
 
 
