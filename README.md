@@ -1,6 +1,10 @@
 # FoolMVP
 
-一种MVP的实现方式，目标：代码高度复用、良好的组件颗粒度、方便进行单元测试，结构尽量清晰简单的高内聚低耦合的分层结构。
+一种MVP的实现方式，目标：业务代码高度复用、良好的组件颗粒度、方便进行单元测试，结构尽量清晰简单的高内聚低耦合的分层结构。
+
+这是我团队高效开发三部曲中的实战篇，另两篇分别是愿景篇和方法论篇：
+[开发团队多人协作的思考(愿景篇)](https://www.jianshu.com/p/d8cef3725175)
+[日常开发中，如何给团队留下财富？（方法论篇）](https://www.jianshu.com/p/67d8789864b2)
 
 FoolMVP_Lib的核心基础结构：
 
@@ -26,6 +30,7 @@ FoolMVP_Lib的核心基础结构：
 ## 正文
 MVP，全称 Model-View-Presenter，分别代表界面层（V）、业务逻辑层（P）、数据访问层（M），即三层架构。
 
+
 <img src="https://github.com/qqiabc521/FoolMVP/blob/master/screenshot/image_thumb_1.png" width="500" height="300" alt="项目结构图"/>
 
 
@@ -34,7 +39,8 @@ MVP有好多种实现方式，核心的不同点大都集中在P层上。所以P
 
 ### FoolMVP设计的方法论:
     
-    代码高度复用、良好的组件颗粒度、方便进行单元测试，结构尽量清晰简单的高内聚低耦合的分层结构。
+    业务代码高度复用、良好的组件颗粒度、方便进行单元测试，结构尽量清晰简单的高内聚低耦合的分层结构。
+    
 
 ### P层的设计要求：
 * **1.UI的无关性：**
@@ -90,6 +96,8 @@ RequestCallBack接口的抽象类，使RequestCallBack的实现者只关注onRes
 
 * **PresenterDelegate：**
 Presenter的一个委派类，为了简化RequestCallBack的实现类，使RequestCallBack的实现类只关注onResponse结果，将通用的操作在基类中统一处理。
+
+
 
 ## Demo说明：
 
@@ -368,6 +376,30 @@ Presenter的一个委派类，为了简化RequestCallBack的实现类，使Reque
 * 5.面向接口编程，进行业务逻辑的物理隔离。比如FollowPresenter，依赖UserAssistInteractor，但其实现类UserAssistInteractorImpl在user模块中实现。
 依赖注入贯穿各个业务层中，这时就需要我们在app中对接口与实现类进行注入绑定，UserAssistInteractor接口与UserAssistInteractorImpl实现类通过代理+预埋点的方式将两者关联起来。
 
+
+        @Module
+        public class ApiModule {
+            private DaoMaster daoMaster;
+            private UserAssistInteractorPlaceholder userAssistInteractorPlaceholder;
+        
+            public ApiModule(DaoMaster daoMaster, UserAssistInteractorPlaceholder userAssistInteractorPlaceholder) {
+                this.daoMaster = daoMaster;
+                this.userAssistInteractorPlaceholder = userAssistInteractorPlaceholder;
+            }
+        
+            @Provides
+            @Singleton
+            public DaoSession provideDaoSession() {
+                return daoMaster.newSession();
+            }
+        
+            @Provides
+            @Singleton
+            public UserAssistInteractor provideUserAssistInteractor() {
+                return userAssistInteractorPlaceholder.getUserAssistInteractorProxy();
+            }
+        
+        }
 
         public class UserAssistInteractorProxy implements UserAssistInteractor {
     
