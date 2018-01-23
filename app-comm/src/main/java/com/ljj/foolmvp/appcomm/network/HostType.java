@@ -17,7 +17,7 @@ public class HostType {
     /**
      * wemeet的host
      */
-    public static final int WEMEET_BASE_HOST = 1;
+    public static final int APP_BASE_HOST = 1;
 
     public static final int WEMEET_WS_HOST = 2;
 
@@ -27,7 +27,7 @@ public class HostType {
     /**
      * 替代枚举的方案，使用IntDef保证类型安全
      */
-    @IntDef({WEMEET_BASE_HOST})
+    @IntDef({APP_BASE_HOST})
     @Retention(RetentionPolicy.SOURCE)
     public @interface HostTypeChecker {
 

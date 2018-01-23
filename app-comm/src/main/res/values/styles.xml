@@ -1,65 +1,8 @@
 <resources>
 
-    <!--titleBar样式-->
-    <style name="Wemeet.ActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="background">@color/colorTheme</item>
-        <item name="actionBarItemBackground">@drawable/toolbarBackground</item>
-        <item name="selectableItemBackground">@drawable/toolbarBackground</item>
-        <item name="titleTextAppearance">@style/ToolBar.Title</item>
-        <item name="subtitleTextAppearance">@style/Toolbar.SubTitle</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimaryDark">@color/colorText33</item>
-        <item name="elevation">1px</item>
-    </style>
-
-    <!--titlebar 标题-->
-    <style name="ToolBar.Title" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/colorText33</item>
-    </style>
-
-    <!--titlebar 副标题-->
-    <style name="Toolbar.SubTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">10sp</item>
-        <item name="android:textColor">@color/colorText33</item>
-    </style>
-
-    <style name="Wemeet.Toolbar" parent="Wemeet.ActionBar">
-        <item name="actionMenuTextColor">@color/colorText33</item>
-        <!--<item name="actionMenuTextSize">@dimen/sp18</item>-->
-        <item name="background">@color/colorPageBg</item>
-    </style>
-
-    <style name="ThemeOverlay.Toolbar.Menu" parent="Widget.AppCompat.Light.PopupMenu">
-        <item name="android:colorBackground">@color/colorPageBg</item>
-        <item name="android:textColor">@color/colorText33</item>
-        <item name="overlapAnchor">false</item>
-        <item name="android:dropDownHorizontalOffset">-16dp</item>
-        <item name="android:dropDownVerticalOffset">16dp</item>
-
-    </style>
-
-    <style name="WemeetTitlebar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dp</item>
-        <!--<item name="android:background">@drawable/border_bottom_bg</item>-->
-    </style>
-
-    <style name="WemeetTitlebar.Title">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/colorText33</item>
-    </style>
-
-    <style name="WemeetLine">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1px</item>
-        <item name="android:background">@color/colorLine</item>
-    </style>
-
     <style name="LoadingDialog" parent="Theme.AppCompat.Dialog">
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
-
 
 </resources>
