@@ -38,13 +38,13 @@ public class FollowPresenterImpl extends BasePresenterImpl<IFollowView> implemen
                 if (updateRelationship == null) {
                     return;
                 }
-                if (mView != null) {
+                if (getView() != null) {
                     long userId = updateRelationship.getUserId();
                     Relationship relationship = updateRelationship.getRelationship();
                     if (Relationship.DEFAULT.equals(relationship)) {
-                        mView.doUnFollowResult(userId, relationship);
+                        getView().doUnFollowResult(userId, relationship);
                     } else if (Relationship.FOLLOWED.equals(relationship)) {
-                        mView.doFollowedResult(userId, relationship);
+                        getView().doFollowedResult(userId, relationship);
                     }
                 }
             }

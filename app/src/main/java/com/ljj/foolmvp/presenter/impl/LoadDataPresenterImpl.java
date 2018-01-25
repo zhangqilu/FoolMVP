@@ -43,8 +43,8 @@ public class LoadDataPresenterImpl extends BasePresenterImpl<ILoadDataView> impl
     @Override
     public void loadData() {
         if(FoolMVPSetting.isLoadedData()){
-            if (mView != null) {
-                mView.doLoadDataResult();
+            if (getView() != null) {
+                getView().doLoadDataResult();
             }
         }else {
             startLoadObservable();
@@ -71,16 +71,16 @@ public class LoadDataPresenterImpl extends BasePresenterImpl<ILoadDataView> impl
             @Override
             public void doResult(Long id) {
                 AppLog.e(getTag(), "saved feed" + id.toString());
-                if (mView != null) {
-                    mView.doLoadingData(id.intValue(), COUNT);
+                if (getView() != null) {
+                    getView().doLoadingData(id.intValue(), COUNT);
                 }
             }
 
             @Override
             public void doCompleted() {
                 FoolMVPSetting.setLoadedData(true);
-                if (mView != null) {
-                    mView.doLoadDataResult();
+                if (getView() != null) {
+                    getView().doLoadDataResult();
                 }
             }
         }));

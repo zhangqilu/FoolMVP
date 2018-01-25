@@ -33,8 +33,8 @@ public class SaveUserPresenterImpl extends BasePresenterImpl<ISaveUserView> impl
             @Override
             public void onResponse(Long data) {
                 userBean.setId(data);
-                if(mView != null){
-                    mView.doSaveUsersResult(userBean);
+                if(getView() != null){
+                    getView().doSaveUsersResult(userBean);
                 }
             }
         });
@@ -54,8 +54,8 @@ public class SaveUserPresenterImpl extends BasePresenterImpl<ISaveUserView> impl
         mUserInteractor.saveUsers(userEntities, new AbstractRequestCallBack<Boolean>(this) {
             @Override
             public void onResponse(Boolean data) {
-                if(mView != null){
-                    mView.doSaveUsersResult();
+                if(getView() != null){
+                    getView().doSaveUsersResult();
                 }
             }
         });

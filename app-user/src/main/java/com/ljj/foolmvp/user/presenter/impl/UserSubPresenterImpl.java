@@ -71,8 +71,8 @@ public class UserSubPresenterImpl extends BaseSubPresenterImpl<IUserSubView> imp
     @Override
     public void doUserDetail(UserBean userBean) {
         this.userBean = userBean;
-        if(mView != null){
-            mView.doUserDetail(userBean);
+        if(getView() != null){
+            getView().doUserDetail(userBean);
         }
     }
 
@@ -88,8 +88,8 @@ public class UserSubPresenterImpl extends BaseSubPresenterImpl<IUserSubView> imp
             return;
         }
         userBean.setRelationship(relationship);
-        if(mView != null){
-            mView.doFollowedResult();
+        if(getView() != null){
+            getView().doFollowedResult();
         }
     }
 
@@ -105,8 +105,8 @@ public class UserSubPresenterImpl extends BaseSubPresenterImpl<IUserSubView> imp
             return;
         }
         userBean.setRelationship(relationship);
-        if(mView != null){
-            mView.doUnFollowResult();
+        if(getView() != null){
+            getView().doUnFollowResult();
         }
     }
 }

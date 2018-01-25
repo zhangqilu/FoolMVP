@@ -53,8 +53,8 @@ public class FeedDetailPresenterImpl extends BasePresenterImpl<IFeedDetailView> 
              */
             @Override
             public void onResponse(FeedBean data) {
-                if(mView != null){
-                    mView.doFeedResult(data);
+                if(getView() != null){
+                    getView().doFeedResult(data);
                 }
             }
         }));

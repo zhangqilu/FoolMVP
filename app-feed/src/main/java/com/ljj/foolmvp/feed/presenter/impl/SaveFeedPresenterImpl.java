@@ -33,8 +33,8 @@ public class SaveFeedPresenterImpl extends BasePresenterImpl<ISaveFeedView> impl
             @Override
             public void onResponse(Long data) {
                 feedBean.setId(data);
-                if(mView != null){
-                    mView.doSaveFeedResult(feedBean);
+                if(getView() != null){
+                    getView().doSaveFeedResult(feedBean);
                 }
             }
         });
@@ -54,8 +54,8 @@ public class SaveFeedPresenterImpl extends BasePresenterImpl<ISaveFeedView> impl
         feedInteractor.saveFeeds(feedEntities, new AbstractRequestCallBack<Void>(this) {
             @Override
             public void onResponse(Void data) {
-                if(mView != null){
-                    mView.doSaveFeedsResult();
+                if(getView() != null){
+                    getView().doSaveFeedsResult();
                 }
             }
         });

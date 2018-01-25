@@ -5,9 +5,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 
 import com.ljj.foolmvp.di.scope.ContextLife;
+
+import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
@@ -20,8 +23,8 @@ import io.reactivex.disposables.Disposable;
  * Presenter的基础类，BasePresenter的子类，并实现了ViewState、PresenterDelegate接口。主要封装了Presenter的公共逻辑。
  */
 
-public abstract class BasePresenterImpl<T extends BaseView> implements BasePresenter, ViewState, PresenterDelegate {
-    protected T mView;
+public abstract class BasePresenterImpl<V extends BaseView> implements BasePresenter<V>, ViewState, PresenterDelegate {
+    private WeakReference<V> viewRef;
 
     private CompositeDisposable mDisposables = new CompositeDisposable();
 
@@ -49,10 +52,16 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
     /**
      * 检查是否绑定View
      */
+    @UiThread
     protected void checkAttachView() {
-        if (mView == null) {
+        if (getView() == null) {
             throw new RuntimeException("Presenter is destoryed or no attach view");
         }
+    }
+
+    @UiThread
+    protected V getView(){
+        return viewRef == null ? null : viewRef.get();
     }
 
     /**
@@ -60,9 +69,12 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      *
      * @return
      */
+    @UiThread
     @Override
     public Activity getActivity() {
         checkAttachView();
+
+        V mView = getView();
 
         if (mView instanceof Fragment) {
             return ((Fragment) mView).getActivity();
@@ -80,9 +92,12 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      *
      * @return
      */
+    @UiThread
     @Override
     public Fragment getFragment() {
         checkAttachView();
+
+        V mView = getView();
 
         if (mView instanceof Fragment) {
             return (Fragment) mView;
@@ -98,9 +113,12 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      *
      * @return
      */
+    @UiThread
     @Override
     public Service getService() {
         checkAttachView();
+
+        V mView = getView();
 
         if (mView instanceof Service) {
             return (Service) mView;
@@ -115,6 +133,7 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      * 获得应用的Resources
      * @return
      */
+    @UiThread
     protected Resources getResources() {
         if (mApplicationContext == null) {
             throw new RuntimeException("mApplicationContext is null");
@@ -126,20 +145,22 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      * 请求开始回调
      * @param disposable
      */
+    @UiThread
     @Override
     public void onRequestStart(Disposable disposable) {
-        if (mView != null) {
-            mView.onStartTask(getPresenterId(), disposable);
+        if (getView() != null) {
+            getView().onStartTask(getPresenterId(), disposable);
         }
     }
 
     /**
      * 请求完成回调
      */
+    @UiThread
     @Override
     public void onFinish() {
-        if (mView != null) {
-            mView.onFinishTask(getPresenterId());
+        if (getView() != null) {
+            getView().onFinishTask(getPresenterId());
         }
     }
 
@@ -147,10 +168,11 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      * 请求异常回调
      * @param error
      */
+    @UiThread
     @Override
     public void onRequestError(String error) {
-        if (mView != null) {
-            mView.onErrorMessage(getPresenterId(), error);
+        if (getView() != null) {
+            getView().onErrorMessage(getPresenterId(), error);
         }
     }
 
@@ -158,9 +180,10 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      * 绑定BaseView
      * @param view
      */
+    @UiThread
     @Override
-    public void attachView(@NonNull BaseView view) {
-        mView = (T) view;
+    public void attachView(@NonNull V view) {
+        viewRef = new WeakReference<>(view);
         view.compositePresenter(this);
         onCreate();
 
@@ -170,11 +193,13 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
     /**
      * 销毁Presenter
      */
+    @UiThread
     @Override
     public void onDestory() {
         mDisposables.dispose();
         mApplicationContext = null;
-        mView = null;
+        viewRef.clear();
+        viewRef = null;
     }
 
     /**
@@ -191,7 +216,7 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      * @return
      */
     protected boolean isDestory() {
-        return mView == null;
+        return viewRef == null;
     }
 
     /**
@@ -199,6 +224,7 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      *
      * @param d
      */
+    @UiThread
     protected void register(Disposable d) {
         mDisposables.add(d);
     }
@@ -208,6 +234,7 @@ public abstract class BasePresenterImpl<T extends BaseView> implements BasePrese
      *
      * @param d
      */
+    @UiThread
     protected void unRegister(Disposable d) {
         mDisposables.remove(d);
     }

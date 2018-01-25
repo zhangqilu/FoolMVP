@@ -46,8 +46,8 @@ public class UserDetailPresenterImpl extends BasePresenterImpl<IUserDetailView> 
              */
             @Override
             public void onResponse(UserBean data) {
-                if(mView != null){
-                    mView.doUserDetail(data);
+                if(getView() != null){
+                    getView().doUserDetail(data);
                 }
             }
         }));

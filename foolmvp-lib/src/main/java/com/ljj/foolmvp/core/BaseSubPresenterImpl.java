@@ -10,7 +10,7 @@ import io.reactivex.disposables.Disposable;
  * 真实的push UI事件处理交由SubPresenter所绑定的View处理。
  */
 
-public abstract class BaseSubPresenterImpl<T extends BaseView> extends BasePresenterImpl<T> implements BaseView {
+public abstract class BaseSubPresenterImpl<V extends BaseView> extends BasePresenterImpl<V> implements BaseView {
 
     /**
      * 聚合Presenter，方便对Prestener集中处理
@@ -19,6 +19,7 @@ public abstract class BaseSubPresenterImpl<T extends BaseView> extends BasePrese
      */
     @Override
     public void compositePresenter(BasePresenter basePresenter) {
+        V mView = getView();
         if (mView != null) {
             mView.compositePresenter(basePresenter);
         }
@@ -32,6 +33,7 @@ public abstract class BaseSubPresenterImpl<T extends BaseView> extends BasePrese
      */
     @Override
     public void onStartTask(int presenterId, Disposable disposable) {
+        V mView = getView();
         if (mView != null) {
             mView.onStartTask(presenterId, disposable);
         }
@@ -44,6 +46,7 @@ public abstract class BaseSubPresenterImpl<T extends BaseView> extends BasePrese
      */
     @Override
     public void onFinishTask(int presenterId) {
+        V mView = getView();
         if (mView != null) {
             mView.onFinishTask(presenterId);
         }
@@ -57,6 +60,7 @@ public abstract class BaseSubPresenterImpl<T extends BaseView> extends BasePrese
      */
     @Override
     public void onErrorMessage(int presenterId, String msg) {
+        V mView = getView();
         if (mView != null) {
             mView.onErrorMessage(presenterId, msg);
         }
@@ -69,6 +73,7 @@ public abstract class BaseSubPresenterImpl<T extends BaseView> extends BasePrese
      */
     @Override
     public void showNofityMessage(String text) {
+        V mView = getView();
         if (mView != null) {
             mView.showNofityMessage(text);
         }

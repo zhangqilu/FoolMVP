@@ -51,8 +51,8 @@ public class FeedsPresenterImpl extends BasePresenterImpl<IFeedsView> implements
         }), this, new RxUtils.RxResult<List<FeedBrief>>() {
             @Override
             public void doResult(List<FeedBrief> feedBriefs) {
-                if(mView != null){
-                    mView.doFeedsResult(feedBriefs);
+                if(getView() != null){
+                    getView().doFeedsResult(feedBriefs);
                 }
             }
 
